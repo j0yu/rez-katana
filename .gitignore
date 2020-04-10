@@ -1,0 +1,11 @@
+/build/
+*.py[co]
+
+# Katana Linux/Windows installer files
+Katana*.tar.gz
+Katana*.zip
+
+
+# IDEs
+/.vscode
+/.idea
