@@ -4,11 +4,15 @@ on: push
 
 jobs:
   install:
-    name: Install as rez package (py${{ matrix.python }})
-    runs-on: ubuntu-latest
+    name: Install as rez package (${{ matrix.os }} py${{ matrix.python }})
+    runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
         python: [2.7, 3.7]
+        os: [ubuntu, windows]
+        include:
+        - {os: ubuntu,  variant: 0, exe: katana}
+        - {os: windows,  variant: 1, exe: katanaBin.exe}
 
     steps:
     - name: Set up Python ${{ matrix.python-version }}
@@ -21,6 +25,6 @@ jobs:
     - name: Checkout ${{ github.repository }}
       uses: actions/checkout@v2
 
-    - run: rez build --install
-    
-    - run: rez env katana -- which katana
+    - run: rez build --install --variant ${{ matrix.variant }}
+
+    - run: rez env katana -- which ${{ matrix.exe }}
