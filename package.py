@@ -2,7 +2,7 @@
 name = "katana"
 
 # Vendor packages: <vendor_version>+local.<our_version>
-__version__ = "3.5v3"
+__version__ = "3.6v2"
 version = __version__.replace("v", ".") + "+local.1.0.0"
 
 description = "Look development and lighting. Built for studios. Loved by artists."

@@ -15,16 +15,11 @@ jobs:
         - {os: windows,  variant: 1, exe: katanaBin.exe}
 
     steps:
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+    - uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python }}
-
     - uses: j0yu/setup-rez@v1
-
-    - name: Checkout ${{ github.repository }}
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
     - run: rez build --install --variant ${{ matrix.variant }}
-
     - run: rez env katana -- which ${{ matrix.exe }}
