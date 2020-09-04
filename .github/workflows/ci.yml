@@ -3,7 +3,46 @@ on: push
 
 
 jobs:
+  check-boost:
+    name: Check boost vc140
+    runs-on: windows-latest
+    env:
+      KATANA_ROOT: "${{github.workspace}}/katana"
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install 3.1v2
+      if: false
+      run: |
+        mkdir "$Env:KATANA_ROOT"
+        cd "$Env:KATANA_ROOT"
+        powershell -File "${{github.workspace}}/windows.ps1" "3.2v2"
+
+    - name: Copy FnBoost
+      if: false
+      run: |
+        $Env:REZ_BUILD_INSTALL_PATH = "${{runner.temp}}/katana3.2v2"
+        mkdir "$Env:REZ_BUILD_INSTALL_PATH"
+        cd "$Env:REZ_BUILD_INSTALL_PATH"
+        powershell -File "${{github.workspace}}/windows.ps1" "3.2v2"
+        
+        $FN_BOOST = "external/FnBoost"
+        mkdir "$($Env:KATANA_ROOT)/$FN_BOOST"
+        Copy-Item -Path "$($Env:REZ_BUILD_INSTALL_PATH)/bin/Fnboost*" -Destination "$($Env:KATANA_ROOT)/bin" -Recurse
+        Copy-Item -Path "$($Env:REZ_BUILD_INSTALL_PATH)/$($FN_BOOST)/include" -Destination "$($Env:KATANA_ROOT)/$($FN_BOOST)" -Recurse
+
+    - run: mkdir boost
+    - run: curl.exe -L -o "boost/boostinstaller.exe" "https://sourceforge.net/projects/boost/files/boost-binaries/1.61.0/boost_1_61_0-msvc-14.0-64.exe/download"
+    - name: Install boost
+      run: |
+        boost\boostinstaller.exe /DIR=boost /NORESTART /NOICONS /SUPPRESSMESSAGEBOXES /SILENT
+        Wait-Process boostinstaller
+    - name: Check boost
+      shell: bash
+      run: find boost -name "boost_regex*" -or -name "boost_filesystem*"
+
   install:
+    if: false
     name: Install as rez package (${{ matrix.os }} py${{ matrix.python }})
     runs-on: ${{ matrix.os }}-latest
     strategy:
